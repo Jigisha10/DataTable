@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- icon Link -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+        integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<body onload="getdata()">
+    <h1 class="text-center">Data Table</h1>
+    <div class="container">
+        <div class="inputdiv">
+            <input class="inputbox" id="serachInput" type="text" placeholder="Search by name email or role" />
+        </div>
+        <div class="table-box">
+            <table>
+                <thead>
+                    <tr>
+                        <th class="text-center"><input id="selectAll" type="checkbox" /></th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="dataTable">
+                    <!-- Data will be insert here -->
+                </tbody>
+            </table>
+            <div class="d-flex">
+                <button class="delete-btn">Delete Selected</button>
+                <ul class="pagination" id="pagination"></ul>
+            </div>
+        </div>
+    </div>
+    <script src="myscript.js"></script>
+</body>
+
+</html>
