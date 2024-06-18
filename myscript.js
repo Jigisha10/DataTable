@@ -3,9 +3,9 @@ const itemsPerPage = 10;
 
 async function getdata() {
     let response = await fetch('https://geektrust.s3-ap-southeast-1.amazonaws.com/adminui-problem/members.json');
-    let data = await response.json();
-    create_table(data, currentPage);
-    create_pagination(data);
+    let fullData = await response.json();
+    create_table(fullData, currentPage);
+    create_pagination(fullData);
 }
 
 function create_table(data, page = 1) {
@@ -53,26 +53,25 @@ function create_table(data, page = 1) {
 }
 
 // pagination Funtionality
-
 function create_pagination(data) {
     const paginationDiv = document.getElementById('pagination');
     paginationDiv.innerHTML = '';
 
     const pageCount = Math.ceil(data.length / itemsPerPage);
     for (let i = 1; i <= pageCount; i++) {
-        let page = document.createElement('li');
+        let page = document.createElement('button');
         page.className = "page-Number";
         page.innerText = i;
         paginationDiv.appendChild(page);
     }
-
     const page = document.querySelectorAll('.page-Number');
     for (let i = 0; i < page.length; i++) {
         page[i].addEventListener('click', function (e) {
-            currentPage = e.target.innerText;
+            currentPage = parseInt(e.target.innerText);
             for (let j = 0; j < page.length; j++) {
                 page[j].classList.remove('active');
             }
+            // displayFilteredPage(i, itemsPerPage);
             page[i].classList.add('active');
             create_table(data, currentPage);
         });
@@ -80,11 +79,9 @@ function create_pagination(data) {
     if (page.length > 0) {
         page[0].classList.add('active')
     }
-
 }
 
 // serachFilter Functionality
-
 function serachFilter() {
     var input, filter, table, td, tr, txtvalue;
     var displayRow = [];
@@ -115,12 +112,11 @@ function serachFilter() {
             }
         }
     }
-
-    return { displayRow: displayRow, hideRow: hideRow }
+    // create_pagination(displayRow.length);
+    return { displayRow: displayRow, hideRow: hideRow };
 }
 
 // clear search
-
 function clearSearch() {
     let input = document.getElementById("searchInput");
     let table = document.getElementById("dataTable");
@@ -136,65 +132,11 @@ function clearSearch() {
     input.focus();
 }
 
-// function serachFilter() {
-//     var input, filter, table, tr, userName, userEmail, userRole;
-//     var elementCount = 0;
-//     var nameValue, emailValue, roleValue;
-//     const displayRow = [];
-//     const hideRow = [];
-//     input = document.getElementById('searchInput');
-//     filter = input.value;
-//     table = document.getElementById('dataTable');
-//     tr = table.getElementsByTagName('tr');
-//     for (let i = 0; i < tr.length; i++) {
-//         userName = tr[i].getElementsByTagName('td')[0];
-//         userEmail = tr[i].getElementsByTagName('td')[1];
-//         userRole = tr[i].getElementsByTagName('td')[2];
-//         if (userName || userEmail || userRole) {
-//             nameValue = userName.innerText || userName.textContent;
-//             emailValue = userEmail.innerText || userEmail.textContent;
-//             roleValue = userRole.innerText || userRole.textContent;
-
-//             if (nameValue.indexOf(filter) > -1 || emailValue.indexOf(filter) > -1 || roleValue.indexOf(filter) > -1) {
-//                 displayRow.push(tr[i].id);
-//                 elementCount += 1;
-//                 create_pagination(elementCount);
-//                 if (displayRow.length <= 10) {
-//                     tr[i].style.display = "table-row";
-//                 } else {
-//                     tr[i].style.display = "none";
-//                 }
-//             } else {
-//                 hideRow.push(tr[i].id);
-//                 tr[i].style.display = "none";
-//             }
-//         }
-//     }
-//     return { displayRow: displayRow, hideRow: hideRow};
-// }
-
-// function create_pagination(elementCount) {
-//     table = document.getElementById('dataTable');
-//     tr = table.getElementsByTagName('tr');
-//     elementCount = Math.ceil(elementCount / 10) || Math.ceil(tr.length / 10);
-//     document.getElementById('pagination').innerHTML = '';
-//     for (let i = 1; i <= elementCount; i++) {
-//         let page = document.createElement('button');
-//         page.innerText = i;
-//         page.id = `pageCount${i}`;
-//         let space = document.createElement('span');
-//         document.getElementById('pagination').append(page, space);
-//     }
-// }
-
-
-
 // delete icon functionality
 
 function deleteicon(button) {
     if (confirm('Are you sure you want to delete this record?')) {
-        const row = button.parentNode.parentNode;
-        row.parentNode.appendChild(row);
+        button.parentNode.parentNode.remove();
     }
 }
 
@@ -208,7 +150,6 @@ function selectAllcheckbox() {
     }
 }
 
-
 // select All selected delete button Functionality
 
 function selectAllselected() {
@@ -216,8 +157,7 @@ function selectAllselected() {
         let table = document.getElementById('dataTable');
         let checkboxs = table.querySelectorAll('.userCheckbox:checked');
         for (let i = checkboxs.length - 1; i >= 0; i--) {
-            let row = checkboxs[i].parentElement.parentElement;
-            row.parentElement.removeChild(row);
+            checkboxs[i].parentElement.parentElement.remove();
         }
     }
 }
@@ -241,7 +181,7 @@ function openEditModal(button) {
     modal.style.display = 'block';
 }
 
-document.getElementById('editForm').onsubmit = function(event) {
+document.getElementById('editForm').onsubmit = function (event) {
     event.preventDefault();
 
     // Get the modified data from the form
